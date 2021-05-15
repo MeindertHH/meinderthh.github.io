@@ -4,13 +4,12 @@ url: "https://econometrics.science"
 
 header_pages:
   - index.md
-  - peter.md
   - about.md
   - contact.md
 
 style: dark
 
-footer: 'follow us on <a href="https://twitter.com/">twitter</a>'
+footer: 'connect with me on <a href="https://www.linkedin.com/in/meindert/">LinkedIn</a>'
 
 # Build settings
 markdown: kramdown
