@@ -50,11 +50,63 @@ Are you sure you need to subclass? Then please continue reading. The guide below
 
 ## How to
 
-After defining a subclass, you need to do the following:
-1. Override constructor properties
-2. Define original properties
+1. Define the subclasses
+2. Override constructor properties
+3. Define original properties
 
-### Override constructor properties
+### 1. Define the subclasses
+
+In this guide we will assume that you want to create two subclasses, a child for Series and a child for DataFrame. We create the child classes as usual, simply by sending the parent classes as a parameter.
+
+{% highlight python %}
+import pandas as pd
+
+
+class SubclassedSeries(pd.Series):
+    pass
+
+
+class SubclassedDataFrame(pd.DataFrame):
+    pass
+{% endhighlight %}
+
+When creating objects from these classes, the parameters get send to the parent class (`__init__` is inherited from the parent):
+
+{% highlight python %}
+>>> s = SubclassedSeries(data=['a', 'b', 'c'])
+>>> s
+0    a
+1    b
+2    c
+dtype: object
+>>> type(s)
+<class '__main__.SubclassedSeries'>
+>>> df = SubclassedDataFrame(data=['a', 'b', 'c'])
+>>> df
+   0
+0  a
+1  b
+2  c
+>>> type(df)
+<class '__main__.SubclassedDataFrame'>
+{% endhighlight %}
+
+### 2. Override constructor properties
+
+If we manipulate these structures, then the child class might be lost. For example:
+
+{% highlight python %}
+>>> s2 = s + s
+>>> s2
+0    aa
+1    bb
+2    cc
+dtype: object
+>>> type(s2)
+<class 'pandas.core.series.Series'>
+{% endhighlight %}
+
+When manipulating, you want your SubclassedSeries to construct and return a SubclassedSeries and SubclassedDataFrame to construct and return a SubclassedDataFrame. For that one needs to overwrite the `_constructor` property:
 
 {% highlight python %}
 class SubclassedSeries(pd.Series):
@@ -62,22 +114,26 @@ class SubclassedSeries(pd.Series):
     def _constructor(self):
         return SubclassedSeries
 
-    @property
-    def _constructor_expanddim(self):
-        return SubclassedDataFrame
-
-
 class SubclassedDataFrame(pd.DataFrame):
     @property
     def _constructor(self):
         return SubclassedDataFrame
-
-    @property
-    def _constructor_sliced(self):
-        return SubclassedSeries
 {% endhighlight %}
 
-### Define original properties
+Now:
+
+{% highlight python %}
+>>> s2 = s + s
+>>> s2
+0    aa
+1    bb
+2    cc
+dtype: object
+>>> type(s2)
+<class '__main__.SubclassedSeries'>
+{% endhighlight %}
+
+### 3. Define original properties
 
 ## Potential issues
 
