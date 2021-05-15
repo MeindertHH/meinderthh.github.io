@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Subclassing pandas data structures
-date: 2019-05-15
+date: 2021-05-15
 categories: python
 ---
 
