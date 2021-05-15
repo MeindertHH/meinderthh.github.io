@@ -11,5 +11,6 @@ style: dark
 footer: 'connect with me on <a href="https://www.linkedin.com/in/meindert/">LinkedIn</a>'
 
 # Build settings
-markdown: kramdown
+#markdown: kramdown
+highlighter: pygments 
 remote_theme: MeindertHH/jekyll-theme-console
