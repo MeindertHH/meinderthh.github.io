@@ -80,7 +80,7 @@ When creating objects from these classes, the parameters get send to the parent 
 2    c
 dtype: object
 >>> type(s)
-<class `__main__.SubclassedSeries'>
+<class "__main__.SubclassedSeries">
 >>> df = SubclassedDataFrame(data=['a', 'b', 'c'])
 >>> df
    0
@@ -88,7 +88,7 @@ dtype: object
 1  b
 2  c
 >>> type(df)
-<class `__main__.SubclassedDataFrame'>
+<class "__main__.SubclassedDataFrame">
 {% endhighlight %}
 
 ### 2. Override constructor properties
@@ -103,7 +103,7 @@ If we manipulate these structures, then the child class might be lost. For examp
 2    cc
 dtype: object
 >>> type(s2)
-<class `pandas.core.series.Series'>
+<class "pandas.core.series.Series">
 {% endhighlight %}
 
 When manipulating, you want your SubclassedSeries to construct and return a SubclassedSeries and SubclassedDataFrame to construct and return a SubclassedDataFrame. For that one needs to overwrite the `_constructor` property:
@@ -130,7 +130,7 @@ Now:
 2    cc
 dtype: object
 >>> type(s2)
-<class `__main__.SubclassedSeries'>
+<class "__main__.SubclassedSeries">
 {% endhighlight %}
 
 ### 3. Define original properties
