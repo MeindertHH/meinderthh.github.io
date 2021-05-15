@@ -80,7 +80,7 @@ When creating objects from these classes, the parameters get send to the parent 
 2    c
 dtype: object
 >>> type(s)
-<class '__main__.SubclassedSeries'>
+<class __main__.SubclassedSeries>
 >>> df = SubclassedDataFrame(data=['a', 'b', 'c'])
 >>> df
    0
@@ -88,7 +88,7 @@ dtype: object
 1  b
 2  c
 >>> type(df)
-<class '__main__.SubclassedDataFrame'>
+<class __main__.SubclassedDataFrame>
 {% endhighlight %}
 
 ### 2. Override constructor properties
@@ -103,7 +103,7 @@ If we manipulate these structures, then the child class might be lost. For examp
 2    cc
 dtype: object
 >>> type(s2)
-<class 'pandas.core.series.Series'>
+<class pandas.core.series.Series>
 {% endhighlight %}
 
 When manipulating, you want your SubclassedSeries to construct and return a SubclassedSeries and SubclassedDataFrame to construct and return a SubclassedDataFrame. For that one needs to overwrite the `_constructor` property:
@@ -130,7 +130,16 @@ Now:
 2    cc
 dtype: object
 >>> type(s2)
-<class '__main__.SubclassedSeries'>
+<class __main__.SubclassedSeries>
+{% endhighlight %}
+
+Likewise, we want the SubclassedSeries to construct a SubclassedDataFrame when going from 1D to 2D and vice versa.
+
+Right now, a SubclassedSeries constructs a pandas DataFrame:
+
+{% highlight python %}
+>>> s_to_df = s.to_frame()
+>>> s_to_df
 {% endhighlight %}
 
 ### 3. Define original properties
@@ -141,6 +150,6 @@ I ran across the following issues:
 1. `AttributeError: 'function' object has no attribute '_get_axis_number'`
 2. Transferring metadata from subclassed DataFrame to subclassed Series and vice versa.
 
-###  '_get_axis_number'
+###  `_get_axis_number`
 
 ### Transferring metadata
