@@ -47,13 +47,13 @@ I like a little less indentation in my LaTeX-documents.
 
 You can find these settings in Settings > Editor > Code Style > Latex > Tabs and Indents.
 
-![LaTeX style settings](/images/LaTeX style settings.PNG)
+![LaTeX style settings](/images/LaTeX style settings.PNG){: width="100%"}
 
 ### Configuration template
 
 By default, TeXiFy generates and fills `auxil` and `out` folders for auxiliary files and output. I wish to have these in the folder of the `.tex` file that I want to compile. To that order, I set the file paths to `{mainFileParent}` as in the image below. To change these settings, navigate to File > New Projects Setup > Run Configuration Templates... 
 
-![TeXiFy configuration template](/images/TeXiFy configuration template.PNG){: width="100%"}
+![TeXiFy configuration template](/images/TeXiFy configuration template.PNG)
 
 ### You are all set
 
