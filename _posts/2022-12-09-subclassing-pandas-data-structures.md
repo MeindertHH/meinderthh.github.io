@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Subclassing pandas data structures
-date: 2021-05-15
+date: 2022-12-09
 categories: python
 ---
 
@@ -9,7 +9,7 @@ categories: python
 
 ## The problem
 
-Say you want to extend pandas data structures with custom attributes and methods. The classes you define are subclasses of DataFrame and Series. That means that instances of your class are instances of DataFrame or Series as well. You won't loose any functionality of the original pandas data structures. Methods that accept pandas data structures, such as matplotlib, will treat your objects in the same manner.
+You want to extend pandas data structures with custom attributes and methods. The classes you define are subclasses of DataFrame and Series. That means that instances of your class are instances of DataFrame or Series as well. You won't loose functionality of the original pandas data structures. Methods that accept pandas data structures, such as matplotlib, will treat your objects in the same manner.
 
 {% highlight python %}
 >>> x = MySeries()
@@ -48,7 +48,9 @@ Usage:
 
 Are you sure you need to subclass? Then please continue reading. The guide below is based on this [documentation](https://pandas.pydata.org/pandas-docs/stable/development/extending.html#subclassing-pandas-data-structures) and other sources addressing specific issues (linked below).
 
-## How to
+For this post I have used Python 3.10 and pandas 1.5.1.
+
+## Steps
 
 1. Define the subclasses
 2. Override constructor properties
@@ -61,10 +63,8 @@ In this guide we will assume that you want to create two subclasses, a child for
 {% highlight python %}
 import pandas as pd
 
-
 class SubclassedSeries(pd.Series):
     pass
-
 
 class SubclassedDataFrame(pd.DataFrame):
     pass
@@ -139,17 +139,98 @@ Right now, a SubclassedSeries constructs a pandas DataFrame:
 
 {% highlight python %}
 >>> s_to_df = s.to_frame()
->>> s_to_df
+>>> type(s_to_df)
+<class 'pandas.core.frame.DataFrame'>
+{% endhighlight %}
+
+Vice versa, slicing a SubclassedDataFrame returns a pandas.Series instead of a SubclassedSeries.
+
+To fix this, we need to override the `_constructor_expanddim`  and `_constructor_sliced` properties.
+
+{% highlight python %}
+class SubclassedSeries(pd.Series):
+    @property
+    def _constructor(self):
+    return SubclassedSeries
+
+    @property
+    def _constructor_expanddim(self):
+        return SubclassedDataFrame
+
+class SubclassedDataFrame(pd.DataFrame):
+    @property
+    def _constructor(self):
+    return SubclassedDataFrame
+
+    @property
+    def _constructor_sliced(self):
+        return SubclassedSeries
+
+{% endhighlight %}
+
+Unfortunately, this will not copy the metadata (e.g. data you have added for original properties, see below). Here is a [workaround](https://github.com/pandas-dev/pandas/issues/13208#issuecomment-326556232) (that may become unnecessary with a future release of pandas):
+
+{% highlight python %}
+# Adapted from
+# https://github.com/pandas-dev/pandas/issues/13208#issuecomment-326556232
+
+class SubclassedSeries(pd.Series):
+    @property
+    def _constructor(self):
+        def f(*args, **kwargs):
+            return SubclassedSeries(*args, **kwargs).__finalize__(self)
+        return f
+
+    @property
+    def _constructor_expanddim(self):
+        def f(*args, **kwargs):
+            return SubclassedDataFrame(
+                *args, **kwargs).__finalize__(self, method='inherit')
+        return f
+
+class SubclassedDataFrame(pd.DataFrame):
+    @property
+    def _constructor(self):
+        def f(*args, **kwargs):
+            return SubclassedDataFrame(*args, **kwargs).__finalize__(self)
+        return f
+
+    @property
+    def _constructor_sliced(self):
+        def f(*args, **kwargs):
+            return SubclassedSeries(
+                *args, **kwargs).__finalize__(self, method='inherit')
+        return f
+
 {% endhighlight %}
 
 ### 3. Define original properties
 
-## Potential issues
+You are now ready to define new properties.
 
-I ran across the following issues:
-1. `AttributeError: 'function' object has no attribute '_get_axis_number'`
-2. Transferring metadata from subclassed DataFrame to subclassed Series and vice versa.
+{% highlight python %}
+class SubclassedSeries(pd.Series):
+    ...
 
-###  `_get_axis_number`
+    @property
+    def my_property(self):
+        # do something
+        return ...
 
-### Transferring metadata
+class SubclassedDataFrame(pd.DataFrame):
+    ...
+
+    @property
+    def my_property(self):
+        # do something
+        return ...
+
+{% endhighlight %}
+
+## Transfering metadata
+
+If at any point you need to transfer metadata from one instance of a subclassed data structure to another, just call `__finalize__(self, method='inherit')`, e.g.
+
+{% highlight python %}
+>>> another_s.__finalize__(s, method='inherit')
+{% endhighlight %}
