@@ -35,7 +35,7 @@ I am using the following TeXiFy settings:
 * I want to automatically compile the document on save.
 * Personally, I didn't want the editor to automatically insert `\item` when pressing enter in `itemize` and `enumerate`.
 
-![TeXiFy settings](/images/TeXiFy settings.PNG){: max-width="100%"}
+![TeXiFy settings](/images/TeXiFy settings.PNG){: width="100%"}
 
 Additionally, I added `; *.tex` to 'Soft wrap these files:' in Settings > Editor > General > Soft Wraps.
 
@@ -47,13 +47,13 @@ I like a little less indentation in my LaTeX-documents.
 
 You can find these settings in Settings > Editor > Code Style > Latex > Tabs and Indents.
 
-![LaTeX style settings](/images/LaTeX style settings.PNG){: max-width="100%"}
+![LaTeX style settings](/images/LaTeX style settings.PNG)
 
 ### Configuration template
 
 By default, TeXiFy generates and fills `auxil` and `out` folders for auxiliary files and output. I wish to have these in the folder of the `.tex` file that I want to compile. To that order, I set the file paths to `{mainFileParent}` as in the image below. To change these settings, navigate to File > New Projects Setup > Run Configuration Templates... 
 
-![TeXiFy configuration template](/images/TeXiFy configuration template.PNG){: max-width="100%"}
+![TeXiFy configuration template](/images/TeXiFy configuration template.PNG){: width="100%"}
 
 ### You are all set
 
