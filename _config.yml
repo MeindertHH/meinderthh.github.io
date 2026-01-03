@@ -1,3 +1,20 @@
-theme: jekyll-theme-minimal
-title: MeindertHH's homepage
-description: Bookmark this to keep an eye on my project updates!
+title: Meindert's personal notebook
+description: Some random thoughts, curated links, quotes, and notes. Unthemed curiosities on math, investing, tech, culture, and whatever.
+remote_theme: b2a3e8/jekyll-theme-console
+url: "meinderthh.github.io"
+baseurl: ""
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+style: dark
+listen_for_clients_preferred_style: true
+header_pages:
+  - index.md
+github_username: MeindertHH
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
